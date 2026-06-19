@@ -1,0 +1,47 @@
+write_caption_task:
+  description: >
+    Write social copy for {business_name} ({platform} {asset_type}).
+
+    Image analysis (already completed — use this, do not re-analyze):
+    - Tags: {image_tags_list}
+    - Scene: {scene_summary}
+    - Mood: {mood}
+    - Food items: {food_items}
+    - Full JSON: {image_analysis_json}
+
+    Brand context:
+    - Summary: {summary}
+    - Tone: {tone}
+    - Cuisine: {cuisine}
+    - Location: {location_hint}
+    - Website: {website_url}
+
+    Write 1 primary caption and exactly 2 alternate variants.
+    Locale: {locale}.
+    {cta_instruction}
+  expected_output: >
+    Primary caption, exactly 2 caption variants, and a CTA line if requested.
+    Plain text, no JSON.
+  agent: brand_copywriter
+
+optimize_post_task:
+  description: >
+    Produce final publish-ready output for {platform} {asset_type}.
+
+    Use the caption draft from the previous task and this image analysis:
+    {image_analysis_json}
+
+    Rules:
+    - Max {max_hashtags} hashtags
+    - Mix broad and local tags (use {location_hint})
+    - Include image_tags from the analysis
+    - Add platform_notes (char limits, placement tips)
+    - Keep caption under Instagram's 2200 char limit
+    - Locale: {locale}
+  expected_output: >
+    Valid JSON only (no markdown fences) with keys:
+    caption, caption_variants (array of 2 strings), hashtags (array),
+    image_tags (array), cta (string or null), platform_notes (string).
+  agent: social_optimizer
+  context:
+    - write_caption_task

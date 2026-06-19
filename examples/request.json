@@ -1,0 +1,15 @@
+{
+  "image_url": "https://ik.imagekit.io/fooai/socials/67b989a2-e80f-4de1-bc95-66a2be077138/uploaded_at_1781900205885_4W-aiXem1.jpeg",
+  "platform": "instagram",
+  "asset_type": "post",
+  "brand_context": {
+    "business_name": "Dates and Olives",
+    "website_url": "https://datesandolives.com",
+    "summary": "Dates and Olives is a family-owned business that sells mediterranean food.",
+    "tone": "warm, casual, local",
+    "cuisine": "Middle Eastern",
+    "location_hint": "Nattick, MA",
+    "personality": ["friendly", "authentic"],
+    "colors": ["#C0392B", "#F5E6CA"]
+  }
+}
