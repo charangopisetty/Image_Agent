@@ -65,13 +65,13 @@ class TestApiKeyAuth:
         monkeypatch.setenv("API_KEY", "test-secret-key")
 
     def test_missing_api_key_returns_401(self, api_key_env):
-        response = client.post("/social-post", json=VALID_REQUEST)
+        response = client.post("/create_social_post", json=VALID_REQUEST)
         assert response.status_code == 401
         assert response.json()["error"]["code"] == ErrorCode.UNAUTHORIZED
 
     def test_invalid_api_key_returns_401(self, api_key_env):
         response = client.post(
-            "/social-post",
+            "/create_social_post",
             json=VALID_REQUEST,
             headers={"X-API-Key": "wrong-key"},
         )
@@ -79,7 +79,7 @@ class TestApiKeyAuth:
 
     def test_valid_api_key_allows_request(self, api_key_env, mock_generate):
         response = client.post(
-            "/social-post",
+            "/create_social_post",
             json=VALID_REQUEST,
             headers={"X-API-Key": "test-secret-key"},
         )
@@ -87,7 +87,7 @@ class TestApiKeyAuth:
 
     def test_bearer_token_auth(self, api_key_env, mock_generate):
         response = client.post(
-            "/social-post",
+            "/create_social_post",
             json=VALID_REQUEST,
             headers={"Authorization": "Bearer test-secret-key"},
         )
@@ -109,19 +109,19 @@ class TestSocialPostValidation:
     def test_missing_image_url_returns_422(self):
         payload = {**VALID_REQUEST}
         del payload["image_url"]
-        response = client.post("/social-post", json=payload)
+        response = client.post("/create_social_post", json=payload)
         assert response.status_code == 422
         assert response.json()["error"]["code"] == ErrorCode.VALIDATION_ERROR
 
     def test_invalid_image_url_returns_422(self):
         payload = {**VALID_REQUEST, "image_url": "not-a-url"}
-        response = client.post("/social-post", json=payload)
+        response = client.post("/create_social_post", json=payload)
         assert response.status_code == 422
 
 
 class TestSocialPostSuccess:
     def test_create_social_post(self, mock_generate):
-        response = client.post("/social-post", json=VALID_REQUEST)
+        response = client.post("/create_social_post", json=VALID_REQUEST)
         assert response.status_code == 200
         body = response.json()
         assert body["caption"] == MOCK_RESPONSE.caption

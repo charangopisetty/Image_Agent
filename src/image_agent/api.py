@@ -68,13 +68,18 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.post("/social-post", response_model=SocialPostResponse)
+@app.post(
+    "/create_social_post",
+    response_model=SocialPostResponse,
+    operation_id="create_social_post",
+    summary="Create social post",
+)
 async def create_social_post(request: SocialPostRequest) -> SocialPostResponse:
     """
     Generate Instagram-style social post content from an image URL and brand context.
 
     Example:
-        curl -X POST http://127.0.0.1:8080/social-post \\
+        curl -X POST http://127.0.0.1:8080/create_social_post \\
           -H "X-API-Key: $API_KEY" \\
           -H "Content-Type: application/json" \\
           -d @examples/request.json
