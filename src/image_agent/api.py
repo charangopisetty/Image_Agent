@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
 
+from image_agent.auth import is_authorized, requires_api_key, unauthorized_response
 from image_agent.errors import ErrorBody, ErrorCode, ErrorResponse, raise_api_error
 from image_agent.schemas import SocialPostRequest, SocialPostResponse
 from image_agent.service import generate_social_post
@@ -13,6 +14,13 @@ app = FastAPI(
     description="Generate social post captions, hashtags, and tags from an image and brand context.",
     version="0.1.0",
 )
+
+
+@app.middleware("http")
+async def api_key_middleware(request: Request, call_next):
+    if requires_api_key(request.url.path) and not is_authorized(request):
+        return unauthorized_response()
+    return await call_next(request)
 
 
 @app.exception_handler(RequestValidationError)
@@ -67,6 +75,7 @@ async def create_social_post(request: SocialPostRequest) -> SocialPostResponse:
 
     Example:
         curl -X POST http://127.0.0.1:8080/social-post \\
+          -H "X-API-Key: $API_KEY" \\
           -H "Content-Type: application/json" \\
           -d @examples/request.json
     """

@@ -59,6 +59,52 @@ class TestHealth:
         assert response.json() == {"status": "ok"}
 
 
+class TestApiKeyAuth:
+    @pytest.fixture
+    def api_key_env(self, monkeypatch: pytest.MonkeyPatch):
+        monkeypatch.setenv("API_KEY", "test-secret-key")
+
+    def test_missing_api_key_returns_401(self, api_key_env):
+        response = client.post("/social-post", json=VALID_REQUEST)
+        assert response.status_code == 401
+        assert response.json()["error"]["code"] == ErrorCode.UNAUTHORIZED
+
+    def test_invalid_api_key_returns_401(self, api_key_env):
+        response = client.post(
+            "/social-post",
+            json=VALID_REQUEST,
+            headers={"X-API-Key": "wrong-key"},
+        )
+        assert response.status_code == 401
+
+    def test_valid_api_key_allows_request(self, api_key_env, mock_generate):
+        response = client.post(
+            "/social-post",
+            json=VALID_REQUEST,
+            headers={"X-API-Key": "test-secret-key"},
+        )
+        assert response.status_code == 200
+
+    def test_bearer_token_auth(self, api_key_env, mock_generate):
+        response = client.post(
+            "/social-post",
+            json=VALID_REQUEST,
+            headers={"Authorization": "Bearer test-secret-key"},
+        )
+        assert response.status_code == 200
+
+    def test_health_does_not_require_api_key(self, api_key_env):
+        response = client.get("/health")
+        assert response.status_code == 200
+
+    def test_docs_do_not_require_api_key(self, api_key_env):
+        root = client.get("/", follow_redirects=False)
+        assert root.status_code == 307
+        assert root.headers["location"] == "/docs"
+        assert client.get("/docs").status_code == 200
+        assert client.get("/openapi.json").status_code == 200
+
+
 class TestSocialPostValidation:
     def test_missing_image_url_returns_422(self):
         payload = {**VALID_REQUEST}

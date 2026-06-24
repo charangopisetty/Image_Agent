@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 
 class ErrorCode(StrEnum):
     VALIDATION_ERROR = "validation_error"
+    UNAUTHORIZED = "unauthorized"
     RATE_LIMIT_EXCEEDED = "rate_limit_exceeded"
     AUTHENTICATION_ERROR = "authentication_error"
     CONTEXT_TOO_LARGE = "context_too_large"
