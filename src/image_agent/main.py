@@ -14,7 +14,6 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 EXAMPLE_PAYLOAD = {
     "image_url": "https://ik.imagekit.io/fooai/socials/example/uploaded_at_example.jpeg",
-    "platform": "instagram",
     "asset_type": "post",
     "brand_context": {
         "business_name": "Joe's Pizza",

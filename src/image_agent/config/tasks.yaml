@@ -1,6 +1,6 @@
-write_caption_task:
+write_cross_platform_task:
   description: >
-    Write social copy for {business_name} ({platform} {asset_type}).
+    Write social copy for {business_name} (Twitter, Reddit, and Facebook {asset_type}).
 
     Image analysis (already completed — use this, do not re-analyze):
     - Tags: {image_tags_list}
@@ -16,32 +16,43 @@ write_caption_task:
     - Location: {location_hint}
     - Website: {website_url}
 
-    Write 1 primary caption and exactly 2 alternate variants.
+    For each platform write:
+    - Twitter: 1 primary tweet and exactly 2 alternate tweets (each under 280 characters)
+    - Reddit: 1 title + body and exactly 2 alternate titles (body can stay shared or vary slightly)
+    - Facebook: 1 primary caption and exactly 2 alternate captions
+
     Locale: {locale}.
     {cta_instruction}
   expected_output: >
-    Primary caption, exactly 2 caption variants, and a CTA line if requested.
-    Plain text, no JSON.
-  agent: brand_copywriter
+    Plain-text drafts for Twitter (tweets), Reddit (title + body), and Facebook
+    (captions). No JSON.
+  agent: cross_platform_social_writer
 
-optimize_post_task:
+optimize_cross_platform_task:
   description: >
-    Produce final publish-ready output for {platform} {asset_type}.
+    Produce final publish-ready output for Twitter, Reddit, and Facebook {asset_type}s.
 
-    Use the caption draft from the previous task and this image analysis:
+    Use the copy drafts from the previous task and this image analysis:
     {image_analysis_json}
 
     Rules:
-    - Max {max_hashtags} hashtags
-    - Mix broad and local tags (use {location_hint})
-    - Include image_tags from the analysis
-    - Add platform_notes (char limits, placement tips)
-    - Keep caption under Instagram's 2200 char limit
+    - Twitter: text under 280 characters; max 3 hashtags; optional short CTA
+    - Reddit: compelling title (under 300 chars), informative body; avoid hashtag
+      spam; authentic community tone
+    - Facebook: caption under 63206 chars (aim for concise); max {max_hashtags}
+      hashtags; mix broad and local tags (use {location_hint})
+    - Include image_tags from the analysis in the top-level response
+    - Add platform_notes per platform (char limits, placement tips)
     - Locale: {locale}
   expected_output: >
     Valid JSON only (no markdown fences) with keys:
-    caption, caption_variants (array of 2 strings), hashtags (array),
-    image_tags (array), cta (string or null), platform_notes (string).
+    twitter (object with text, text_variants array of 2 strings, hashtags array,
+    cta string or null, platform_notes string),
+    reddit (object with title, title_variants array of 2 strings, body,
+    body_variants array of up to 2 strings, cta string or null, platform_notes string),
+    facebook (object with caption, caption_variants array of 2 strings, hashtags array,
+    cta string or null, platform_notes string),
+    image_tags (array).
   agent: social_optimizer
   context:
-    - write_caption_task
+    - write_cross_platform_task

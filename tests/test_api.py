@@ -10,13 +10,17 @@ from litellm.exceptions import RateLimitError
 
 from image_agent.api import app
 from image_agent.errors import ErrorCode, classify_exception
-from image_agent.models import SocialPostResponse
+from image_agent.models import (
+    FacebookPostContent,
+    RedditPostContent,
+    SocialPostResponse,
+    TwitterPostContent,
+)
 
 client = TestClient(app)
 
 VALID_REQUEST = {
     "image_url": "https://example.com/food.jpg",
-    "platform": "instagram",
     "asset_type": "post",
     "brand_context": {
         "business_name": "Joe's Pizza",
@@ -36,12 +40,29 @@ VALID_REQUEST = {
 }
 
 MOCK_RESPONSE = SocialPostResponse(
-    caption="Fresh pizza night.",
-    caption_variants=["Alt 1", "Alt 2"],
-    hashtags=["#pizza", "#brooklyn"],
+    twitter=TwitterPostContent(
+        text="Fresh pizza night in Brooklyn.",
+        text_variants=["Alt tweet 1", "Alt tweet 2"],
+        hashtags=["#pizza", "#brooklyn"],
+        cta="Order now",
+        platform_notes="Keep under 280 characters for Twitter.",
+    ),
+    reddit=RedditPostContent(
+        title="Best Neapolitan slice in Brooklyn?",
+        title_variants=["Alt title 1", "Alt title 2"],
+        body="We just pulled this margherita from the oven...",
+        body_variants=["Alt body 1"],
+        cta=None,
+        platform_notes="Use an authentic, community-first tone.",
+    ),
+    facebook=FacebookPostContent(
+        caption="Fresh pizza night.",
+        caption_variants=["Alt 1", "Alt 2"],
+        hashtags=["#pizza", "#brooklyn"],
+        cta="Order now — link in bio",
+        platform_notes="Keep captions conversational for Facebook.",
+    ),
     image_tags=["pizza", "margherita"],
-    cta="Order now — link in bio",
-    platform_notes="Keep under 2200 chars for Instagram.",
 )
 
 
@@ -106,6 +127,10 @@ class TestApiKeyAuth:
 
 
 class TestSocialPostValidation:
+    @pytest.fixture(autouse=True)
+    def no_api_key(self, monkeypatch: pytest.MonkeyPatch):
+        monkeypatch.delenv("API_KEY", raising=False)
+
     def test_missing_image_url_returns_422(self):
         payload = {**VALID_REQUEST}
         del payload["image_url"]
@@ -120,12 +145,18 @@ class TestSocialPostValidation:
 
 
 class TestSocialPostSuccess:
+    @pytest.fixture(autouse=True)
+    def no_api_key(self, monkeypatch: pytest.MonkeyPatch):
+        monkeypatch.delenv("API_KEY", raising=False)
+
     def test_create_social_post(self, mock_generate):
         response = client.post("/create_social_post", json=VALID_REQUEST)
         assert response.status_code == 200
         body = response.json()
-        assert body["caption"] == MOCK_RESPONSE.caption
-        assert body["hashtags"] == MOCK_RESPONSE.hashtags
+        assert body["twitter"]["text"] == MOCK_RESPONSE.twitter.text
+        assert body["reddit"]["title"] == MOCK_RESPONSE.reddit.title
+        assert body["facebook"]["caption"] == MOCK_RESPONSE.facebook.caption
+        assert body["image_tags"] == MOCK_RESPONSE.image_tags
         mock_generate.assert_called_once()
 
 

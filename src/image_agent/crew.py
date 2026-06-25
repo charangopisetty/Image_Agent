@@ -10,6 +10,7 @@ from crewai.project import CrewBase, agent, before_kickoff, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 
 from image_agent.llm import resolve_llm
+from image_agent.models import SocialPostResponse
 from image_agent.vision import analyze_image_url
 
 DEFAULT_LLM = resolve_llm(os.getenv("MODEL"))
@@ -17,7 +18,7 @@ DEFAULT_LLM = resolve_llm(os.getenv("MODEL"))
 
 @CrewBase
 class ImageAgent:
-    """Social post caption crew: vision pre-step, then copy + platform optimization."""
+    """Social post crew: vision pre-step, then cross-platform copy + optimization."""
 
     agents: list[BaseAgent]
     tasks: list[Task]
@@ -35,9 +36,9 @@ class ImageAgent:
         return inputs
 
     @agent
-    def brand_copywriter(self) -> Agent:
+    def cross_platform_social_writer(self) -> Agent:
         return Agent(
-            config=self.agents_config["brand_copywriter"],  # type: ignore[index]
+            config=self.agents_config["cross_platform_social_writer"],  # type: ignore[index]
             llm=DEFAULT_LLM,
             verbose=True,
         )
@@ -51,16 +52,17 @@ class ImageAgent:
         )
 
     @task
-    def write_caption_task(self) -> Task:
+    def write_cross_platform_task(self) -> Task:
         return Task(
-            config=self.tasks_config["write_caption_task"],  # type: ignore[index]
+            config=self.tasks_config["write_cross_platform_task"],  # type: ignore[index]
         )
 
     @task
-    def optimize_post_task(self) -> Task:
+    def optimize_cross_platform_task(self) -> Task:
         return Task(
-            config=self.tasks_config["optimize_post_task"],  # type: ignore[index]
-            context=[self.write_caption_task()],
+            config=self.tasks_config["optimize_cross_platform_task"],  # type: ignore[index]
+            context=[self.write_cross_platform_task()],
+            output_pydantic=SocialPostResponse,
         )
 
     @crew

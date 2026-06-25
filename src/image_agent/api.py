@@ -11,7 +11,7 @@ from image_agent.service import generate_social_post
 
 app = FastAPI(
     title="Image Agent API",
-    description="Generate social post captions, hashtags, and tags from an image and brand context.",
+    description="Generate Twitter, Reddit, and Facebook post content from an image and brand context.",
     version="0.1.0",
 )
 
@@ -76,7 +76,10 @@ def health() -> dict[str, str]:
 )
 async def create_social_post(request: SocialPostRequest) -> SocialPostResponse:
     """
-    Generate Instagram-style social post content from an image URL and brand context.
+    Generate Twitter, Reddit, and Facebook post content from an image URL and brand context.
+
+    Returns a JSON object with separate `twitter`, `reddit`, and `facebook` sections
+    plus shared `image_tags` from vision analysis.
 
     Example:
         curl -X POST http://127.0.0.1:8080/create_social_post \\

@@ -8,16 +8,33 @@ class ImageAnalysis(BaseModel):
     food_items: list[str] = Field(default_factory=list)
 
 
-class CaptionDraft(BaseModel):
+class TwitterPostContent(BaseModel):
+    text: str
+    text_variants: list[str] = Field(min_length=2, max_length=2)
+    hashtags: list[str]
+    cta: str | None = None
+    platform_notes: str
+
+
+class RedditPostContent(BaseModel):
+    title: str
+    title_variants: list[str] = Field(min_length=2, max_length=2)
+    body: str
+    body_variants: list[str] = Field(default_factory=list, max_length=2)
+    cta: str | None = None
+    platform_notes: str
+
+
+class FacebookPostContent(BaseModel):
     caption: str
     caption_variants: list[str] = Field(min_length=2, max_length=2)
+    hashtags: list[str]
     cta: str | None = None
+    platform_notes: str
 
 
 class SocialPostResponse(BaseModel):
-    caption: str
-    caption_variants: list[str]
-    hashtags: list[str]
+    twitter: TwitterPostContent
+    reddit: RedditPostContent
+    facebook: FacebookPostContent
     image_tags: list[str]
-    cta: str | None = None
-    platform_notes: str

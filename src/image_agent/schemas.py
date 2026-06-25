@@ -22,7 +22,6 @@ class PostOptions(BaseModel):
 
 class SocialPostRequest(BaseModel):
     image_url: HttpUrl
-    platform: str = Field(..., min_length=1, examples=["instagram"])
     asset_type: str = Field(..., min_length=1, examples=["post"])
     brand_context: BrandContext
     options: PostOptions = Field(default_factory=PostOptions)

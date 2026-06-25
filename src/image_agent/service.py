@@ -13,7 +13,6 @@ def build_crew_inputs(payload: dict) -> dict:
     opts = payload.get("options") or {}
     return {
         "image_url": str(payload["image_url"]),
-        "platform": payload["platform"],
         "asset_type": payload["asset_type"],
         "business_name": brand["business_name"],
         "website_url": brand.get("website_url", ""),
