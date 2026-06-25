@@ -22,16 +22,37 @@ Rules:
 - No markdown, no code fences, no extra keys"""
 
 
+def _strip_thinking(text: str) -> str:
+    think_tag = "think"
+    text = re.sub(
+        rf"<{think_tag}>[\s\S]*?</{think_tag}>",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+    text = re.sub(
+        r"<think>[\s\S]*?</think>",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+    return text.strip()
+
+
 def _extract_json(raw: str) -> dict:
-    text = raw.strip()
+    text = _strip_thinking(raw.strip())
     fence = re.search(r"```(?:json)?\s*([\s\S]*?)```", text)
     if fence:
         text = fence.group(1).strip()
+    start = text.find("{")
+    end = text.rfind("}")
+    if start != -1 and end > start:
+        text = text[start : end + 1]
     return json.loads(repair_json(text))
 
 
 def analyze_image_url(image_url: str) -> ImageAnalysis:
-    """Call the vision LLM directly (avoids Groq + CrewAI tool conflicts)."""
+    """Call the vision LLM directly (Groq Qwen3.6-27B multimodal; avoids CrewAI tool conflicts)."""
     model = resolve_llm(os.getenv("VISION_MODEL"), vision=True)
     response = completion(
         model=model,

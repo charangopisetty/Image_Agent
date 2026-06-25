@@ -10,31 +10,40 @@ class ImageAnalysis(BaseModel):
 
 class TwitterPostContent(BaseModel):
     text: str
-    text_variants: list[str] = Field(min_length=2, max_length=2)
-    hashtags: list[str]
+    text_variants: list[str] = Field(default_factory=list)
+    hashtags: list[str] = Field(default_factory=list)
     cta: str | None = None
-    platform_notes: str
+    platform_notes: str = ""
 
 
 class RedditPostContent(BaseModel):
     title: str
-    title_variants: list[str] = Field(min_length=2, max_length=2)
-    body: str
-    body_variants: list[str] = Field(default_factory=list, max_length=2)
+    title_variants: list[str] = Field(default_factory=list)
+    body: str = ""
+    body_variants: list[str] = Field(default_factory=list)
     cta: str | None = None
-    platform_notes: str
+    platform_notes: str = ""
+
+
+class InstagramPostContent(BaseModel):
+    caption: str
+    caption_variants: list[str] = Field(default_factory=list)
+    hashtags: list[str] = Field(default_factory=list)
+    cta: str | None = None
+    platform_notes: str = ""
 
 
 class FacebookPostContent(BaseModel):
     caption: str
-    caption_variants: list[str] = Field(min_length=2, max_length=2)
-    hashtags: list[str]
+    caption_variants: list[str] = Field(default_factory=list)
+    hashtags: list[str] = Field(default_factory=list)
     cta: str | None = None
-    platform_notes: str
+    platform_notes: str = ""
 
 
 class SocialPostResponse(BaseModel):
     twitter: TwitterPostContent
     reddit: RedditPostContent
+    instagram: InstagramPostContent
     facebook: FacebookPostContent
-    image_tags: list[str]
+    image_tags: list[str] = Field(default_factory=list)

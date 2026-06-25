@@ -13,8 +13,8 @@ _KNOWN_PREFIXES = (
     "openrouter/",
 )
 
-# Groq model aliases → official Groq model id (without groq/ prefix)
-_GROQ_ALIASES: dict[str, str] = {
+# Groq text model aliases → official Groq model id (without groq/ prefix)
+_GROQ_TEXT_ALIASES: dict[str, str] = {
     "qwen/qwen3.6-27b": "qwen/qwen3-32b",
     "qwen3.6-27b": "qwen/qwen3-32b",
     "qwen/qwen3-32b": "qwen/qwen3-32b",
@@ -22,8 +22,16 @@ _GROQ_ALIASES: dict[str, str] = {
     "llama-3.3-70b-versatile": "llama-3.3-70b-versatile",
 }
 
+# Groq vision/multimodal models (qwen3-32b is text-only on Groq)
+_GROQ_VISION_ALIASES: dict[str, str] = {
+    "qwen/qwen3.6-27b": "qwen/qwen3.6-27b",
+    "qwen3.6-27b": "qwen/qwen3.6-27b",
+    "qwen/qwen3-32b": "qwen/qwen3.6-27b",
+    "meta-llama/llama-4-scout-17b-16e-instruct": "meta-llama/llama-4-scout-17b-16e-instruct",
+}
+
 DEFAULT_TEXT_MODEL = "groq/qwen/qwen3-32b"
-DEFAULT_VISION_MODEL = "groq/meta-llama/llama-4-scout-17b-16e-instruct"
+DEFAULT_VISION_MODEL = "groq/qwen/qwen3.6-27b"
 
 
 def resolve_llm(model: str | None, *, vision: bool = False) -> str:
@@ -39,7 +47,8 @@ def resolve_llm(model: str | None, *, vision: bool = False) -> str:
     openai_key = os.getenv("OPENAI_API_KEY")
 
     if groq_key:
-        groq_model = _GROQ_ALIASES.get(model, model)
+        aliases = _GROQ_VISION_ALIASES if vision else _GROQ_TEXT_ALIASES
+        groq_model = aliases.get(model, model)
         return f"groq/{groq_model}"
 
     if openai_key:

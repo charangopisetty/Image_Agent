@@ -48,7 +48,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --timeout 300 \
   --min-instances 0 \
   --max-instances 10 \
-  --set-env-vars "GROQ_API_KEY=${GROQ_API_KEY},API_KEY=${API_KEY},MODEL=${MODEL:-groq/qwen/qwen3-32b},VISION_MODEL=${VISION_MODEL:-groq/meta-llama/llama-4-scout-17b-16e-instruct}"
+  --set-env-vars "GROQ_API_KEY=${GROQ_API_KEY},API_KEY=${API_KEY},MODEL=${MODEL:-groq/qwen/qwen3-32b},VISION_MODEL=${VISION_MODEL:-groq/qwen/qwen3.6-27b}"
 
 echo "Done. Service URL:"
 gcloud run services describe "${SERVICE_NAME}" --region "${REGION}" --format='value(status.url)'

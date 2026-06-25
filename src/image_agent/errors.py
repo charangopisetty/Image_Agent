@@ -140,7 +140,13 @@ def _message_heuristic_mapping(blob: str) -> tuple[int, ErrorCode, str] | None:
             ErrorCode.CONTEXT_TOO_LARGE,
             "Input exceeds model limits.",
         )
-    if any(token in blob for token in ("image", "vision", "multimodal")) and any(
+    if "tool_use_failed" in blob or "failed to call a function" in blob:
+        return (
+            502,
+            ErrorCode.GENERATION_FAILED,
+            "Social post generation failed while formatting the model response.",
+        )
+    if any(token in blob for token in ("vision", "analyze_image_url", "image analysis")) and any(
         token in blob for token in ("failed", "unsupported", "invalid", "could not")
     ):
         return (

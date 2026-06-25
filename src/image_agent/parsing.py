@@ -2,25 +2,29 @@ import json
 import re
 
 from json_repair import repair_json
-from pydantic import BaseModel
-
-from image_agent.models import SocialPostResponse
 
 
-def _extract_json(raw: str) -> dict:
-    text = raw.strip()
+def _strip_thinking(text: str) -> str:
+    text = re.sub(
+        r"<think>[\s\S]*?</think>",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+    return text.strip()
+
+
+def extract_platform_json(raw: str) -> dict:
+    """Extract a single JSON object from a writer task's raw output.
+
+    Handles Qwen-style <think> blocks, markdown fences, and surrounding prose.
+    """
+    text = _strip_thinking((raw or "").strip())
     fence = re.search(r"```(?:json)?\s*([\s\S]*?)```", text)
     if fence:
         text = fence.group(1).strip()
+    start = text.find("{")
+    end = text.rfind("}")
+    if start != -1 and end > start:
+        text = text[start : end + 1]
     return json.loads(repair_json(text))
-
-
-def parse_social_post_response(raw: str) -> SocialPostResponse:
-    """Parse crew output into the API response schema."""
-    return SocialPostResponse.model_validate(_extract_json(raw))
-
-
-def pydantic_to_dict(model: BaseModel | None) -> dict | None:
-    if model is None:
-        return None
-    return model.model_dump()
