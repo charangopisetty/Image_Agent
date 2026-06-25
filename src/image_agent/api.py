@@ -1,10 +1,15 @@
 import asyncio
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
 
-from image_agent.auth import is_authorized, requires_api_key, unauthorized_response
+from image_agent.auth import (
+    API_KEY_HEADER,
+    is_authorized,
+    requires_api_key,
+    unauthorized_response,
+)
 from image_agent.errors import ErrorBody, ErrorCode, ErrorResponse, raise_api_error
 from image_agent.schemas import SocialPostRequest, SocialPostResponse
 from image_agent.service import generate_social_post
@@ -74,7 +79,14 @@ def health() -> dict[str, str]:
     operation_id="create_social_post",
     summary="Create social post",
 )
-async def create_social_post(request: SocialPostRequest) -> SocialPostResponse:
+async def create_social_post(
+    request: SocialPostRequest,
+    x_api_key: str | None = Header(
+        default=None,
+        alias=API_KEY_HEADER,
+        description="Your API key. Required when API_KEY is configured on the server.",
+    ),
+) -> SocialPostResponse:
     """
     Generate Twitter, Reddit, Instagram, and Facebook post content from an image URL and brand context.
 

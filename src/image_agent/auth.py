@@ -10,6 +10,8 @@ from fastapi.responses import JSONResponse
 
 from image_agent.errors import ErrorBody, ErrorCode, ErrorResponse
 
+API_KEY_HEADER = "X-API-Key"
+
 PUBLIC_PATHS = frozenset(
     {
         "/",
@@ -28,7 +30,7 @@ def configured_api_key() -> str | None:
 
 
 def extract_api_key(request: Request) -> str | None:
-    header_key = request.headers.get("X-API-Key")
+    header_key = request.headers.get(API_KEY_HEADER)
     if header_key:
         return header_key.strip()
 
