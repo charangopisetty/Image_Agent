@@ -23,41 +23,6 @@ image_analysis_task:
     suggested messaging angles. No JSON.
   agent: image_analyst
 
-twitter_task:
-  description: >
-    Write a Twitter/X post for {business_name} ({asset_type}) using the creative brief.
-    Locale: {locale}. {cta_instruction}
-
-    Rules:
-    - 1 primary tweet and exactly 2 alternate tweets, each under 280 characters
-    - At most 3 hashtags
-    - Keep it punchy and native to Twitter/X
-  expected_output: >
-    Valid JSON only (no markdown fences, no commentary) with keys:
-    text (string), text_variants (array of 2 strings), hashtags (array of strings),
-    cta (string or null), platform_notes (string).
-  agent: twitter_writer
-  context:
-    - image_analysis_task
-
-reddit_task:
-  description: >
-    Write a Reddit post for {business_name} ({asset_type}) using the creative brief.
-    Locale: {locale}. {cta_instruction}
-
-    Rules:
-    - 1 compelling title (under 300 chars) and exactly 2 alternate titles
-    - 1 informative, authentic body; up to 2 alternate bodies allowed
-    - Avoid hashtag spam and overt self-promotion; sound like a real community member
-  expected_output: >
-    Valid JSON only (no markdown fences, no commentary) with keys:
-    title (string), title_variants (array of 2 strings), body (string),
-    body_variants (array of up to 2 strings), cta (string or null),
-    platform_notes (string).
-  agent: reddit_writer
-  context:
-    - image_analysis_task
-
 instagram_task:
   description: >
     Write an Instagram post for {business_name} ({asset_type}) using the creative brief.

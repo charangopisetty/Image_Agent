@@ -9,9 +9,7 @@ from image_agent.models import (
     FacebookPostContent,
     ImageAnalysis,
     InstagramPostContent,
-    RedditPostContent,
     SocialPostResponse,
-    TwitterPostContent,
 )
 from image_agent.parsing import extract_platform_json
 from image_agent.schemas import SocialPostRequest
@@ -71,17 +69,11 @@ def generate_social_post(request: SocialPostRequest) -> SocialPostResponse:
         return raw.get(name) or raw.get(f"index_{order_index}", "{}")
 
     return SocialPostResponse(
-        twitter=TwitterPostContent.model_validate(
-            extract_platform_json(platform_raw("twitter", 1))
-        ),
-        reddit=RedditPostContent.model_validate(
-            extract_platform_json(platform_raw("reddit", 2))
-        ),
         instagram=InstagramPostContent.model_validate(
-            extract_platform_json(platform_raw("instagram", 3))
+            extract_platform_json(platform_raw("instagram", 1))
         ),
         facebook=FacebookPostContent.model_validate(
-            extract_platform_json(platform_raw("facebook", 4))
+            extract_platform_json(platform_raw("facebook", 2))
         ),
         image_tags=analysis.image_tags,
     )

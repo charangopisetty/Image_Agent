@@ -13,9 +13,7 @@ from image_agent.errors import ErrorCode, classify_exception
 from image_agent.models import (
     FacebookPostContent,
     InstagramPostContent,
-    RedditPostContent,
     SocialPostResponse,
-    TwitterPostContent,
 )
 
 client = TestClient(app)
@@ -41,21 +39,6 @@ VALID_REQUEST = {
 }
 
 MOCK_RESPONSE = SocialPostResponse(
-    twitter=TwitterPostContent(
-        text="Fresh pizza night in Brooklyn.",
-        text_variants=["Alt tweet 1", "Alt tweet 2"],
-        hashtags=["#pizza", "#brooklyn"],
-        cta="Order now",
-        platform_notes="Keep under 280 characters for Twitter.",
-    ),
-    reddit=RedditPostContent(
-        title="Best Neapolitan slice in Brooklyn?",
-        title_variants=["Alt title 1", "Alt title 2"],
-        body="We just pulled this margherita from the oven...",
-        body_variants=["Alt body 1"],
-        cta=None,
-        platform_notes="Use an authentic, community-first tone.",
-    ),
     instagram=InstagramPostContent(
         caption="Margherita, fresh out of the oven.",
         caption_variants=["Alt IG 1", "Alt IG 2"],
@@ -161,8 +144,6 @@ class TestSocialPostSuccess:
         response = client.post("/create_social_post", json=VALID_REQUEST)
         assert response.status_code == 200
         body = response.json()
-        assert body["twitter"]["text"] == MOCK_RESPONSE.twitter.text
-        assert body["reddit"]["title"] == MOCK_RESPONSE.reddit.title
         assert body["instagram"]["caption"] == MOCK_RESPONSE.instagram.caption
         assert body["facebook"]["caption"] == MOCK_RESPONSE.facebook.caption
         assert body["image_tags"] == MOCK_RESPONSE.image_tags

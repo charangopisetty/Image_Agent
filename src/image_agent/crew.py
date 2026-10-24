@@ -15,7 +15,7 @@ DEFAULT_LLM = resolve_llm(os.getenv("MODEL"))
 
 @CrewBase
 class ImageAgent:
-    """Sequential crew: image analyst writes a brief, then one writer per platform."""
+    """Sequential crew: image analyst writes a brief, then Instagram and Facebook writers."""
 
     agents: list[BaseAgent]
     tasks: list[Task]
@@ -24,22 +24,6 @@ class ImageAgent:
     def image_analyst(self) -> Agent:
         return Agent(
             config=self.agents_config["image_analyst"],  # type: ignore[index]
-            llm=DEFAULT_LLM,
-            verbose=True,
-        )
-
-    @agent
-    def twitter_writer(self) -> Agent:
-        return Agent(
-            config=self.agents_config["twitter_writer"],  # type: ignore[index]
-            llm=DEFAULT_LLM,
-            verbose=True,
-        )
-
-    @agent
-    def reddit_writer(self) -> Agent:
-        return Agent(
-            config=self.agents_config["reddit_writer"],  # type: ignore[index]
             llm=DEFAULT_LLM,
             verbose=True,
         )
@@ -65,22 +49,6 @@ class ImageAgent:
         return Task(
             config=self.tasks_config["image_analysis_task"],  # type: ignore[index]
             name="image_analysis",
-        )
-
-    @task
-    def twitter_task(self) -> Task:
-        return Task(
-            config=self.tasks_config["twitter_task"],  # type: ignore[index]
-            name="twitter",
-            context=[self.image_analysis_task()],
-        )
-
-    @task
-    def reddit_task(self) -> Task:
-        return Task(
-            config=self.tasks_config["reddit_task"],  # type: ignore[index]
-            name="reddit",
-            context=[self.image_analysis_task()],
         )
 
     @task
