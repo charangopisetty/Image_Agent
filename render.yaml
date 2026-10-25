@@ -1,0 +1,21 @@
+# Render Hobby workspace, free compute (512 MB RAM, 0.1 CPU).
+# Create the service with New > Blueprint. Render prompts for the sync:false secrets.
+services:
+  - type: web
+    name: image-agent
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: MODEL
+        value: groq/qwen/qwen3.6-27b
+      - key: VISION_MODEL
+        value: groq/qwen/qwen3.6-27b
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: MALLOC_ARENA_MAX
+        value: "2"
