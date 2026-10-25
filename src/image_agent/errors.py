@@ -109,7 +109,28 @@ def _message_heuristic_mapping(blob: str) -> tuple[int, ErrorCode, str] | None:
         )
     if any(
         token in blob
-        for token in ("authentication", "invalid api key", "unauthorized", "401", "403")
+        for token in (
+            "model_not_found",
+            "does not exist or you do not have access",
+            "model_permission_blocked",
+            "blocked at the organization",
+            "permissions_error",
+        )
+    ):
+        return (
+            502,
+            ErrorCode.AUTHENTICATION_ERROR,
+            "LLM provider rejected the selected model. Check MODEL / VISION_MODEL against Groq org access.",
+        )
+    if any(
+        token in blob
+        for token in (
+            "authentication",
+            "invalid api key",
+            "unauthorized",
+            "401",
+            "403",
+        )
     ):
         return (
             502,

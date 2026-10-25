@@ -14,23 +14,30 @@ _KNOWN_PREFIXES = (
 )
 
 # Groq text model aliases → official Groq model id (without groq/ prefix)
+# qwen3-32b is retired on this org; qwen3.8-27b is listed but org-blocked.
 _GROQ_TEXT_ALIASES: dict[str, str] = {
-    "qwen/qwen3.6-27b": "qwen/qwen3-32b",
-    "qwen3.6-27b": "qwen/qwen3-32b",
-    "qwen/qwen3-32b": "qwen/qwen3-32b",
+    "qwen/qwen3.6-27b": "qwen/qwen3.6-27b",
+    "qwen3.6-27b": "qwen/qwen3.6-27b",
+    "qwen/qwen3.8-27b": "qwen/qwen3.6-27b",
+    "qwen3.8-27b": "qwen/qwen3.6-27b",
+    "qwen/qwen3-32b": "qwen/qwen3.6-27b",
+    "qwen3-32b": "qwen/qwen3.6-27b",
     "llama-3.1-8b-instant": "llama-3.1-8b-instant",
     "llama-3.3-70b-versatile": "llama-3.3-70b-versatile",
 }
 
-# Groq vision/multimodal models (qwen3-32b is text-only on Groq)
+# Groq vision/multimodal models
 _GROQ_VISION_ALIASES: dict[str, str] = {
     "qwen/qwen3.6-27b": "qwen/qwen3.6-27b",
     "qwen3.6-27b": "qwen/qwen3.6-27b",
+    "qwen/qwen3.8-27b": "qwen/qwen3.6-27b",
+    "qwen3.8-27b": "qwen/qwen3.6-27b",
     "qwen/qwen3-32b": "qwen/qwen3.6-27b",
+    "qwen3-32b": "qwen/qwen3.6-27b",
     "meta-llama/llama-4-scout-17b-16e-instruct": "meta-llama/llama-4-scout-17b-16e-instruct",
 }
 
-DEFAULT_TEXT_MODEL = "groq/qwen/qwen3-32b"
+DEFAULT_TEXT_MODEL = "groq/qwen/qwen3.6-27b"
 DEFAULT_VISION_MODEL = "groq/qwen/qwen3.6-27b"
 
 
@@ -40,6 +47,10 @@ def resolve_llm(model: str | None, *, vision: bool = False) -> str:
         return DEFAULT_VISION_MODEL if vision else DEFAULT_TEXT_MODEL
 
     model = model.strip()
+    if model.startswith("groq/"):
+        aliases = _GROQ_VISION_ALIASES if vision else _GROQ_TEXT_ALIASES
+        groq_id = model.removeprefix("groq/")
+        return f"groq/{aliases.get(groq_id, groq_id)}"
     if any(model.startswith(prefix) for prefix in _KNOWN_PREFIXES):
         return model
 
@@ -56,5 +67,5 @@ def resolve_llm(model: str | None, *, vision: bool = False) -> str:
 
     raise ValueError(
         f"Model '{model}' has no provider prefix (e.g. groq/ or openai/). "
-        "Set GROQ_API_KEY or OPENAI_API_KEY in .env, or use a full model id like groq/qwen/qwen3-32b."
+        "Set GROQ_API_KEY or OPENAI_API_KEY in .env, or use a full model id like groq/qwen/qwen3.6-27b."
     )
