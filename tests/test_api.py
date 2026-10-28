@@ -1,4 +1,4 @@
-"""API tests — crew is mocked; no live Groq calls."""
+"""API tests — crew is mocked; no live OpenAI calls."""
 
 from __future__ import annotations
 
@@ -152,6 +152,6 @@ class TestSocialPostSuccess:
 
 class TestErrorMapping:
     def test_rate_limit_maps_to_429(self):
-        status, code, _ = classify_exception(RateLimitError("rate limited", "groq", "groq/qwen"))
+        status, code, _ = classify_exception(RateLimitError("rate limited", "openai", "openai/gpt-6-luna"))
         assert status == 429
         assert code == ErrorCode.RATE_LIMIT_EXCEEDED

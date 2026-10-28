@@ -4,7 +4,7 @@
 # Prerequisites:
 #   gcloud auth login
 #   gcloud config set project YOUR_PROJECT_ID
-#   export GROQ_API_KEY=...
+#   export OPENAI_API_KEY=...
 #   export API_KEY=...          # shared key for all API clients
 #
 # Usage:
@@ -21,8 +21,8 @@ if [[ -z "${PROJECT_ID}" || "${PROJECT_ID}" == "(unset)" ]]; then
   exit 1
 fi
 
-if [[ -z "${GROQ_API_KEY:-}" ]]; then
-  echo "Export GROQ_API_KEY before deploying."
+if [[ -z "${OPENAI_API_KEY:-}" ]]; then
+  echo "Export OPENAI_API_KEY before deploying."
   exit 1
 fi
 
@@ -48,7 +48,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --timeout 300 \
   --min-instances 0 \
   --max-instances 10 \
-  --set-env-vars "GROQ_API_KEY=${GROQ_API_KEY},API_KEY=${API_KEY},MODEL=${MODEL:-groq/qwen/qwen3.6-27b},VISION_MODEL=${VISION_MODEL:-groq/qwen/qwen3.6-27b}"
+  --set-env-vars "OPENAI_API_KEY=${OPENAI_API_KEY},API_KEY=${API_KEY},MODEL=${MODEL:-openai/gpt-6-luna},VISION_MODEL=${VISION_MODEL:-openai/gpt-6-luna}"
 
 echo "Done. Service URL:"
 gcloud run services describe "${SERVICE_NAME}" --region "${REGION}" --format='value(status.url)'

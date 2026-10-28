@@ -7,13 +7,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from crewai import Agent, Crew, Process, Task
+from crewai import Agent, Crew, LLM, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 
 from image_agent.llm import resolve_llm
 
-DEFAULT_LLM = resolve_llm(os.getenv("MODEL"))
+
+def build_text_llm() -> LLM:
+    """Text model for the crew. GPT-6 tool calls go through the Responses API."""
+    model = resolve_llm(os.getenv("MODEL"))
+    if model.startswith("openai/gpt-6"):
+        return LLM(model=model, api="responses")
+    return LLM(model=model)
 
 
 @CrewBase
@@ -27,7 +33,7 @@ class ImageAgent:
     def image_analyst(self) -> Agent:
         return Agent(
             config=self.agents_config["image_analyst"],  # type: ignore[index]
-            llm=DEFAULT_LLM,
+            llm=build_text_llm(),
             verbose=True,
         )
 
@@ -35,7 +41,7 @@ class ImageAgent:
     def instagram_writer(self) -> Agent:
         return Agent(
             config=self.agents_config["instagram_writer"],  # type: ignore[index]
-            llm=DEFAULT_LLM,
+            llm=build_text_llm(),
             verbose=True,
         )
 
@@ -43,7 +49,7 @@ class ImageAgent:
     def facebook_writer(self) -> Agent:
         return Agent(
             config=self.agents_config["facebook_writer"],  # type: ignore[index]
-            llm=DEFAULT_LLM,
+            llm=build_text_llm(),
             verbose=True,
         )
 

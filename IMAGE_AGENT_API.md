@@ -241,12 +241,12 @@ All errors share a consistent envelope:
 
 Set via environment variables (`.env` for local, or your deploy platform):
 
-| Variable       | Required | Description                                     |
-| -------------- | -------- | ----------------------------------------------- |
-| `GROQ_API_KEY` | ✅       | Groq API key for text + vision models.          |
-| `API_KEY`      | ❌       | If set, clients must send it via `X-API-Key`.   |
-| `MODEL`        | ❌       | Text model (default `groq/qwen/qwen3.6-27b`).   |
-| `VISION_MODEL` | ❌       | Vision model (default `groq/qwen/qwen3.6-27b`). |
+| Variable         | Required | Description                                     |
+| ---------------- | -------- | ----------------------------------------------- |
+| `OPENAI_API_KEY` | ✅       | OpenAI API key for ChatGPT Luna (`gpt-6-luna`). |
+| `API_KEY`        | ❌       | If set, clients must send it via `X-API-Key`.   |
+| `MODEL`          | ❌       | Text model (default `openai/gpt-6-luna`).       |
+| `VISION_MODEL`   | ❌       | Vision model (default `openai/gpt-6-luna`).     |
 
 ---
 

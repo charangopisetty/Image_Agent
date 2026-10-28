@@ -7,14 +7,14 @@ services:
     plan: free
     healthCheckPath: /health
     envVars:
-      - key: GROQ_API_KEY
+      - key: OPENAI_API_KEY
         sync: false
       - key: API_KEY
         sync: false
       - key: MODEL
-        value: groq/qwen/qwen3.6-27b
+        value: openai/gpt-6-luna
       - key: VISION_MODEL
-        value: groq/qwen/qwen3.6-27b
+        value: openai/gpt-6-luna
       - key: PYTHONUNBUFFERED
         value: "1"
       - key: MALLOC_ARENA_MAX

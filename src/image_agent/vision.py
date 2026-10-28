@@ -52,7 +52,7 @@ def _extract_json(raw: str) -> dict:
 
 
 def analyze_image_url(image_url: str) -> ImageAnalysis:
-    """Call the vision LLM directly (Groq Qwen3.6-27B multimodal; avoids CrewAI tool conflicts)."""
+    """Call the vision LLM directly (ChatGPT Luna / gpt-6-luna; avoids CrewAI tool conflicts)."""
     model = resolve_llm(os.getenv("VISION_MODEL"), vision=True)
     response = completion(
         model=model,

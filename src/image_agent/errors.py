@@ -1,4 +1,4 @@
-"""Map upstream failures (Groq, LiteLLM, CrewAI) to HTTP API errors."""
+"""Map upstream failures (OpenAI, LiteLLM, CrewAI) to HTTP API errors."""
 
 from __future__ import annotations
 
@@ -71,7 +71,7 @@ def _try_litellm_mapping(exc: BaseException) -> tuple[int, ErrorCode, str] | Non
             return (
                 502,
                 ErrorCode.AUTHENTICATION_ERROR,
-                "LLM provider rejected the API key. Check GROQ_API_KEY and model settings.",
+                "LLM provider rejected the API key. Check OPENAI_API_KEY and model settings.",
             )
         if isinstance(item, Timeout):
             return (
@@ -120,7 +120,7 @@ def _message_heuristic_mapping(blob: str) -> tuple[int, ErrorCode, str] | None:
         return (
             502,
             ErrorCode.AUTHENTICATION_ERROR,
-            "LLM provider rejected the selected model. Check MODEL / VISION_MODEL against Groq org access.",
+            "LLM provider rejected the selected model. Check MODEL / VISION_MODEL against your OpenAI project access.",
         )
     if any(
         token in blob
