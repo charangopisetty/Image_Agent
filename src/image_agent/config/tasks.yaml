@@ -7,6 +7,7 @@ image_analysis_task:
     - Scene: {scene_summary}
     - Mood: {mood}
     - Food items: {food_items}
+    - Standout details: {standout_details}
     - Full JSON: {image_analysis_json}
 
     Brand context:
@@ -16,41 +17,118 @@ image_analysis_task:
     - Location: {location_hint}
     - Website: {website_url}
 
-    Describe what is visible and the mood, and suggest concrete messaging angles
-    the platform writers can use.
+    Write the brief in three labeled parts:
+    1. THE DISH AND THE SCENE: 2-3 sentences on the food, the setting, and the mood.
+    2. HOOKS: a numbered list (1., 2., ...) of 4-6 concrete, visible details a
+       writer could build a caption on (texture, color, light, steam, char,
+       garnish, hands, setting). Each one must be specific to this dish and
+       scene and different from the others; "looks delicious" is not a hook.
+       Hooks describe the food and the place, never the photo: no framing,
+       crop, camera angle, composition, "close-up", or where things sit in the frame.
+    3. BRAND TIES: 2-3 ways this photo connects to what makes {business_name}
+       different (from the summary, cuisine, or location).
   expected_output: >
-    A short plain-text creative brief (5-8 sentences) describing the image and
-    suggested messaging angles. No JSON.
+    A plain-text creative brief with the three labeled parts above. No JSON.
   agent: image_analyst
+
+draft_task:
+  description: >
+    Draft captions for {business_name} ({asset_type}) from your angle only.
+
+    Your angle: {angle_name}
+    {angle_direction}
+
+    Creative brief:
+    {creative_brief}
+
+    Rules:
+    - Open on HOOK #{lead_hook} from the brief (or the last hook if there are fewer). Use at most
+      one other hook in each caption. Do not list the ingredients or walk through the plate;
+      leave the other details out and spend the words on your angle. Make it unmistakably this dish
+    - Write about the food and the moment as if the reader is at the table. Never mention the
+      photo, picture, shot, image, close-up, frame, or composition
+    - Commit to your angle's framing (a moment, a perspective, a voice), but make no claims about
+      dishes, ingredients, recipes, sourcing, or history that the brief and brand summary don't support
+    - Write as {business_name} in first person plural ("we", "our"); customers are "you" or "they",
+      never "I"
+    - Stay true to the brand voice: {tone}
+    - Never use these stock phrases: {banned_phrases}
+    - No hashtags and no CTA; editors add those later
+    - Instagram draft: under 2200 chars. Facebook draft: conversational, 1-3 short sentences
+    - Locale: {locale}
+  expected_output: >
+    Valid JSON only (no markdown fences, no commentary) with keys:
+    instagram (string), facebook (string).
+  agent: caption_drafter
 
 instagram_task:
   description: >
-    Write an Instagram post for {business_name} ({asset_type}) using the creative brief.
+    Finalize the Instagram post for {business_name} ({asset_type}).
     Locale: {locale}. {cta_instruction}
 
+    Creative brief (for fact-checking against the photo):
+    {creative_brief}
+
+    Anonymous Instagram drafts from independent writers:
+    {instagram_drafts}
+
     Rules:
-    - 1 primary caption and exactly 2 alternate captions (under 2200 chars each)
+    - Rank the drafts on specificity to this photo, brand voice, and scroll-stopping first line
+    - Primary caption = the best draft; caption_variants = the next 2 best. All three must come
+      from different drafts and open on a different HOOK, so they read as distinct options,
+      not rewordings of one caption. Never blend drafts together
+    - Edit lightly: trim and tune for Instagram. Keep each draft's own voice, angle, and framing
+    - Each caption uses one or two hooks. If a draft runs through the ingredients or the whole plate,
+      cut it back to the hook it opens on (plus one more at most). Across the three captions,
+      don't repeat the same supporting detail
+    - Every caption speaks as {business_name} ("we", "our"). If a draft slips into a customer's
+      "I", recast just those words in the business's voice
+    - Keep scene-setting and perspective: moments, occasions, weather, who it's for, a regular's
+      moment, what a cook would notice. These are the point of each angle, not errors
+    - Fix only factual claims about the food or the business: a dish, ingredient, recipe,
+      sourcing, or history that the brief and brand summary do not support
+    - Captions talk about the food and the moment, never the photo: recast any mention of the
+      picture, shot, close-up, frame, or composition
+    - Never use: {banned_phrases}
     - Up to {max_hashtags} relevant hashtags; mix broad and local tags (use {location_hint})
   expected_output: >
     Valid JSON only (no markdown fences, no commentary) with keys:
     caption (string), caption_variants (array of 2 strings), hashtags (array of strings),
     cta (string or null), platform_notes (string).
   agent: instagram_writer
-  context:
-    - image_analysis_task
 
 facebook_task:
   description: >
-    Write a Facebook post for {business_name} ({asset_type}) using the creative brief.
+    Finalize the Facebook post for {business_name} ({asset_type}).
     Locale: {locale}. {cta_instruction}
 
+    Creative brief (for fact-checking against the photo):
+    {creative_brief}
+
+    Anonymous Facebook drafts from independent writers:
+    {facebook_drafts}
+
     Rules:
-    - 1 primary caption and exactly 2 alternate captions (concise; conversational)
+    - Rank the drafts on specificity to this photo, brand voice, and how naturally they invite a reply
+    - Primary caption = the best draft; caption_variants = the next 2 best. All three must come
+      from different drafts and open on a different HOOK, so they read as distinct options,
+      not rewordings of one caption. Never blend drafts together
+    - Edit lightly: trim and tune for Facebook. Keep each draft's own voice, angle, and framing
+    - Each caption uses one or two hooks. If a draft runs through the ingredients or the whole plate,
+      cut it back to the hook it opens on (plus one more at most). Across the three captions,
+      don't repeat the same supporting detail
+    - Every caption speaks as {business_name} ("we", "our"). If a draft slips into a customer's
+      "I", recast just those words in the business's voice
+    - Keep scene-setting and perspective: moments, occasions, weather, who it's for, a regular's
+      moment, what a cook would notice. These are the point of each angle, not errors
+    - Fix only factual claims about the food or the business: a dish, ingredient, recipe,
+      sourcing, or history that the brief and brand summary do not support
+    - Captions talk about the food and the moment, never the photo: recast any mention of the
+      picture, shot, close-up, frame, or composition
+    - Never use: {banned_phrases}
     - Up to {max_hashtags} hashtags; mix broad and local tags (use {location_hint})
   expected_output: >
     Valid JSON only (no markdown fences, no commentary) with keys:
     caption (string), caption_variants (array of 2 strings), hashtags (array of strings),
     cta (string or null), platform_notes (string).
   agent: facebook_writer
-  context:
-    - image_analysis_task

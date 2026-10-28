@@ -2,7 +2,7 @@
 
 Generate social media post content for **Instagram and Facebook** from a single food/restaurant image and brand context.
 
-A vision model analyzes the image, an image analyst writes a creative brief, and a dedicated copywriter runs sequentially for each platform. The API returns one JSON object with a separate section per platform.
+A vision model analyzes the image and an image analyst writes a creative brief built on concrete visual hooks. Then several **air-gapped drafters** (one per creative angle in `config/angles.yaml`) each write captions in their own isolated crew, in parallel; no drafter sees another's work. Finally a blind editor per platform ranks the anonymized drafts, picks the best three, and adds hashtags and a CTA. The API returns one JSON object with a separate section per platform.
 
 ---
 

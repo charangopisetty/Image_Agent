@@ -90,8 +90,9 @@ async def create_social_post(
     """
     Generate Instagram and Facebook post content from an image URL and brand context.
 
-    An image analyst writes a creative brief, then a dedicated writer runs
-    sequentially for each platform. Returns a JSON object with separate
+    An image analyst writes a creative brief, isolated drafters each write
+    from one creative angle, and a blind editor per platform picks and polishes
+    the best drafts. Returns a JSON object with separate
     `instagram` and `facebook` sections plus shared `image_tags` from vision analysis.
 
     Example:

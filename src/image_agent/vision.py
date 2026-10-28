@@ -15,6 +15,10 @@ Return ONLY a JSON object with these keys:
 - scene_summary: string, 1-2 sentences describing what is visible
 - mood: string, e.g. cozy, celebratory, appetizing
 - food_items: array of visible food/drink items
+- standout_details: array of 3-6 specific details of the food and the scene
+  itself (textures, colors, steam, char, garnish, hands, props, setting),
+  e.g. "leopard-spotted crust edge" rather than "tasty pizza". Describe the
+  food and the place, not the photo: no framing, crop, angle, or composition
 
 Rules:
 - Describe only what you can see in the image

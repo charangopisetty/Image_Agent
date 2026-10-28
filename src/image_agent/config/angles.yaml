@@ -1,0 +1,34 @@
+# Creative angles for the air-gapped caption drafters.
+# Each angle runs as its own isolated crew: it sees the creative brief and
+# brand context, never another drafter's output. Add, remove, or edit angles
+# here; every entry becomes one drafter.
+
+first_bite:
+  name: The First Bite
+  direction: >
+    Write from inches away. Lead with one physical detail of the food (a
+    texture, a color, steam, char, a drip, a crumb) and make the reader
+    feel the first bite. No overview of the dish; zoom in on one moment.
+
+kitchen_insider:
+  name: The Kitchen Insider
+  direction: >
+    Write as our kitchen ("we", "our"). Point to the craft on the plate
+    (the fold, the bake, the plating, the pour) and what we care about getting
+    right. Confident and specific, never boastful.
+
+the_regular:
+  name: The Regular
+  direction: >
+    Write as us, describing a regular's moment: the neighbor who comes in on a
+    rainy weeknight, after the game, for a birthday. Tie the dish to that
+    moment and to the place itself. Warm and human, like an owner who knows
+    their regulars by name, never like an ad. The regular is "you" or "they",
+    never "I".
+
+one_liner:
+  name: The One-Liner
+  direction: >
+    Write short and witty. A single sharp line or a dry joke grounded in what
+    is actually on the plate. Wordplay is welcome only if it fits the brand
+    voice. Under 20 words for the Instagram caption.

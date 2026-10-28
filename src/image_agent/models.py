@@ -6,6 +6,7 @@ class ImageAnalysis(BaseModel):
     scene_summary: str
     mood: str
     food_items: list[str] = Field(default_factory=list)
+    standout_details: list[str] = Field(default_factory=list)
 
 
 class InstagramPostContent(BaseModel):
